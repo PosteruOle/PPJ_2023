@@ -1,0 +1,29 @@
+Tema: regularni izrazi
+
+Faze prevođenja:
+	1) Leksička analiza
+	2) Sintaksna analiza
+	3) Semantička analiza
+	4) Optimizacija
+	
+Leksička analiza (nefomalna definicija):
+
+
+Sintaksna analiza (neformalna definicija):
+
+
+Regularni izrazi (neformalna definicja):
+-------------------------------------------------------------------------
+Regularni izrazi:
+
+1) Literali (literalno iliti bukvalno poklapanje)
+
+2) Alternacija (operator |):
+
+3)
+
+4)
+
+5)
+
+6)	
