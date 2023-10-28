@@ -1,4 +1,8 @@
-Tema: regularni izrazi
+Tema: faze prevođenja, regularni izrazi
+
+Načini prevođenja programa napisanog na višem programskom jeziku:
+	1) Kompilacija
+	2) Interpretacija
 
 Faze prevođenja:
 	1) Leksička analiza
@@ -16,14 +20,64 @@ Regularni izrazi (neformalna definicja):
 -------------------------------------------------------------------------
 Regularni izrazi:
 
-1) Literali (literalno iliti bukvalno poklapanje)
-
+1) Literali (literalno iliti bukvalno poklapanje):
+	tekst ->           banana
+	regularni izraz -> banana 
 2) Alternacija (operator |):
+	tekst ->           banana
+	                   banane
+	regularni izraz -> banana|banane                   
 
-3)
+3) Grupisanje (operatori '()'):
+	tekst ->           banana
+	                   banane
+	regularni izraz -> banan(a|e)
 
-4)
+4) Opciono pojavljivanje (operator ?):
+   (Ponavljanje 0 ili 1 put) 
+	tekst ->           izraz
+	                   izrazi
+	regularni izraz -> izrazi?                   
 
-5)
+5) Ponavljanje 1 ili više puta (operator +):
 
-6)	
+	Regularni izraz ab*c prepoznaje sledeće reči: abc, abbc, abbbc, ..., ab...bc, ...
+
+6) Ponavljanje 0 ili više puta (operator *):
+
+	Regularni izraz ab*c prepoznaje sledeće reči: ac, abc, abbc, abbbc, ..., ab...bc, ...
+
+7) Ponavljanje određeni broj puta (konstrukcija {m, n}):
+
+8) Karakterske klase (skupovi karaktera):
+	a|e|i|o|u  <-> [aeiou]
+	Primeri: [a-z]+, [a-zA-Z], [a-zA-Z0-9_]+
+
+9) Operator '.':
+	.  <- označava sve osim znaka za noci red ('\n')
+
+10) Eskejp karakter '\':
+
+11) Negirane karakterske klase:
+
+12) Ograničavanje pohlepnosti:
+
+13) Referenca u nazad (back reference):
+
+14) Sidra:
+
+15) Granice reči (word boundaries):
+
+16) Unapred definisane karakterske klase (specijalne klase):
+	
+17) Preduvidi (LOOK AHEAD):
+	!!! Ne prepoznaju tekst, već vrše testiranje !!!
+	17.1. Pozitivni preduvidi
+	
+	17.2. Negativni preduvidi
+
+18) Postuvidi (LOOK BEHIND):
+	!!! Ne prepoznaju tekst, već vrše testiranje !!!
+	18.1. Pozitivni postuvidi
+	
+	18.2. Negativni postuvidi		
