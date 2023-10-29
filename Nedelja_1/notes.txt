@@ -17,6 +17,7 @@ Sintaksna analiza (neformalna definicija):
 
 
 Regularni izrazi (neformalna definicja):
+
 -------------------------------------------------------------------------
 Regularni izrazi:
 
@@ -80,4 +81,5 @@ Regularni izrazi:
 	!!! Ne prepoznaju tekst, već vrše testiranje !!!
 	18.1. Pozitivni postuvidi
 	
-	18.2. Negativni postuvidi		
+	18.2. Negativni postuvidi
+			
