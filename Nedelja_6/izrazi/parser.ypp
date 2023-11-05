@@ -1,0 +1,55 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+
+    using namespace std;
+
+    #include "parser.tab.hpp"
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+    
+    extern int yylex();
+%}
+
+%token BROJ
+
+%%
+
+program: program naredba { }
+| naredba                { }
+;
+
+naredba: e ';'           { }
+;
+
+e: e '+' t               { }
+| t                      { }
+;
+
+t: t '*' f               { }
+| f                      { }
+;
+ 
+f: '(' e ')'             { }
+| BROJ                   { }
+;
+
+
+%%
+
+int main(){
+
+    if(yyparse()==0){
+         cout << "Sve je u redu sa unetim aritmetickim izrazima!\n";
+    } else {
+        cout << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}

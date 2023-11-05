@@ -8,3 +8,5 @@ U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
 - Nedelja 3: leksička analiza u Python-u;
 - Nedelja 4: leksička analiza u Python-u, predstavljanje alata flex;
 - Nedelja 5: preostali primeri upotrebe alata flex, predstavljanje OOP koncepata u programskom jeziku C++;
+- Nedelja 6: sintaksna analiza, sintaksna analiza naviše, upoznavanje sa alatima yacc i bison;
+- Nedelja 7: sintaksna analiza, sintaksna analiza naniže, upoznavanje sa tehnikama rekurzivnog spusta i potisnog automata;

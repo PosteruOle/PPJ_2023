@@ -1,0 +1,123 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+    #include <map>
+
+    using namespace std;
+
+    #include "parser.tab.hpp"
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }    
+
+    extern int yylex();
+
+    map<string, double> tablica;
+%}
+
+%union{
+    double x;
+    string *s;
+    bool flag;
+}
+
+
+%token PRINT DODELA EQ NEQ GEQ LEQ PRINT_ALL
+%token<s> ID
+%token<x> BROJ
+%type<x> izraz
+
+%left '+' '-'
+%left '*' '/'
+%right UMINUS
+
+%%
+
+program: program naredba       { }
+| naredba                      { }
+;
+
+naredba: izraz ';'             { }
+| PRINT '(' izraz ')' ';'      { cout << "Uneti izraz je uspesno isparsiran!\nVrednost izraza iznosi: " << $3 << "." << endl; }
+| ID DODELA izraz ';'          { 
+    tablica[*$1]=$3;
+}
+| PRINT_ALL ';'                { 
+    cout << "Primenjuejemo PRINT_ALL pravilo!\n";
+    for(auto it=tablica.begin();it!=tablica.end(); it++){
+        cout << (*it).first << " = " << (*it).second << "\n";
+    }
+}
+| logicka_naredba ';'          { }
+;
+
+izraz: izraz '+' izraz         { $$=$1+$3; }
+| izraz '-' izraz              { $$=$1-$3; }
+| izraz '*' izraz              { $$=$1*$3; }
+| izraz '/' izraz              { $$=$1/$3; }
+| '-' izraz %prec UMINUS       { $$=-$2; }
+| '(' izraz ')'                { $$=$2; }
+| BROJ                         { $$=$1; }
+| ID                           { 
+    if(tablica.find(*$1)==tablica.end()){
+        cerr << "Promenljiva nije definisana!\n";
+        exit(EXIT_FAILURE);
+    }
+    $$=tablica[*$1]; 
+}
+;
+
+logicka_naredba: izraz '<' izraz   { 
+    if($1<$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";     
+}
+| izraz '>' izraz                  {
+    if($1>$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz EQ izraz                   { 
+    if($1==$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz NEQ izraz                  { 
+    if($1!=$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz GEQ izraz                  { 
+    if($1>=$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz LEQ izraz                  {
+    if($1<=$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+ }
+ 
+%%
+
+int main(){
+
+    if(yyparse()==0){
+        cout << "Sve je u redu sa unetim izrazima!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}
