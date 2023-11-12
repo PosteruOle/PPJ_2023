@@ -17,5 +17,10 @@
 "*"       { return PUTA; }
 "("       { return OZ; }
 ")"       { return ZZ; }
+[ \t\n]   { }
+.         {
+    cerr << "Leksicka greska! Neprepoznat token: " << yytext;
+    exit(EXIT_FAILURE);
+}
 
 %%
