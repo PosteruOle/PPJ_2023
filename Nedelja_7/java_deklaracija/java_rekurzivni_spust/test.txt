@@ -1,0 +1,6 @@
+int a;
+
+char[] a, b;
+
+Point p, q;
+Animal[] z1, z2;
