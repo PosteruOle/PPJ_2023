@@ -1,5 +1,5 @@
 # PPJ_2023
-Repozitorijum sadrži materijale sa časovi vežbi iz predmeta Prevođenje programskih jezika na Matematičkom fakultetu Univerziteta u Beogradu za školsku 2023/2024. godinu.
+Repozitorijum sadrži materijale sa časova vežbi iz predmeta Prevođenje programskih jezika na Matematičkom fakultetu Univerziteta u Beogradu za školsku 2023/2024. godinu.
 
 # Hronologija
 U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
