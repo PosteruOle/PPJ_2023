@@ -1,0 +1,211 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <vector>
+    #include <string>
+    #include <map>
+    #include <set>
+    #include <queue>
+
+    using namespace std;
+
+    #include "parser.tab.hpp"
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    map<string, set<int>> tablica;
+    set<int> universal_set;
+    bool universal_flag=false;
+%}
+
+%union{
+    int x;
+    string* id;
+    set<int>* s;
+    bool flag;
+}
+
+%token PRINT PRINTALL DODELA CHECK UNIJA PRESEK RAZLIKA SIMRAZLIKA TT CARD UNIVERSE
+%token<x> BROJ
+%token<id> ID 
+%type<s> skup lista_elemenata
+%type<flag> logicka_naredba
+
+%left '<' '>'
+%left UNIJA PRESEK RAZLIKA SIMRAZLIKA
+%right '~'
+
+%%
+
+program: naredba ';' program   { }
+| naredba ';'                  { }
+;
+
+naredba: ID DODELA skup { tablica[*$1]=*$3; } 
+| PRINT skup            { 
+    cout << "{";
+    for(auto it=$2->begin(); it!=$2->end(); it++){
+        if(it==(--$2->end())){
+            cout << *it << "}\n";
+            break;
+        }
+        cout << *it << ", ";
+    }
+}
+| PRINTALL              { 
+
+}
+| UNIVERSE DODELA skup  {
+    universal_set=*$3;
+    universal_flag=true;
+    cout << "Univerzalni skup je definisan! Operacija komplement je konacno podrzana!\n";
+}
+| CHECK BROJ ':' skup   { 
+    bool flag=false;
+    for(auto it=$4->begin(); it!=$4->end();it++){
+        if(*it==$2){
+            flag=true;
+            break;
+        }
+    }
+    if(!flag){
+        cout << "True!\n";
+    } else {
+        cout << "False!\n";
+    }
+}
+| CHECK logicka_naredba {
+    if($2){
+        cout << "True!\n";
+    } else {
+        cout << "False!\n";
+    }
+}
+| CARD skup             { 
+    cout << "Kardinalnost skupa iznosi: " << $2->size() << ".\n";
+}
+;
+
+skup: '{' lista_elemenata  '}' { $$=$2; }
+| BROJ TT BROJ                 { 
+    $$=new set<int>();
+    for(int i=$1; i<=$3; i++){
+        $$->insert(i);
+    }
+}
+| skup UNIJA skup              { 
+    $$=$1;
+    for(auto it=$3->begin();it!=$3->end();it++){
+        $$->insert(*it);
+    }
+}
+| skup PRESEK skup             { 
+    $$=new set<int>();
+    for(auto it=$1->begin();it!=$1->end();it++){
+        if($3->find(*it)!=$3->end()){
+            $$->insert(*it);
+        }
+    }
+}
+| skup RAZLIKA skup            {
+    $$=new set<int>();
+    for(auto it=$1->begin();it!=$1->end();it++){
+        if($3->find(*it)==$3->end()){
+            $$->insert(*it);
+        }
+    }
+}
+| skup SIMRAZLIKA skup         { 
+    $$=new set<int>();
+    for(auto it=$1->begin();it!=$1->end();it++){
+        if($3->find(*it)==$3->end()){
+            $$->insert(*it);
+        }
+    }
+    for(auto it=$3->begin();it!=$3->end();it++){
+        if($1->find(*it)==$1->end()){
+            $$->insert(*it);
+        }
+    }
+}
+| ID                           { 
+    if(tablica.find(*$1)==tablica.end()){
+        cerr << "Promenljiva nije defiisana!\n";
+    } else {
+        $$=&tablica[*$1];
+    }
+}
+| '~' skup                     {
+    if(!universal_flag){
+        cout << "Univerzalni skup nije definisan! Ne mozemo odrediti komplement skupa!\n";
+    } else {
+        if($2->size()>universal_set.size()){
+            cerr << "Prosledjeni skup je vece kardinalnosti od univerzalnog skupa!\n";
+            exit(EXIT_FAILURE);
+        } else {
+            $$=new set<int>();
+            for(auto it=universal_set.begin();it!=universal_set.end();it++){
+                if($2->find(*it)==$2->end())
+                    $$->insert(*it);
+            }
+        }
+    }
+}
+;
+
+lista_elemenata: BROJ ',' lista_elemenata { 
+    $$=$3;
+    $$->insert($1);
+}
+| BROJ                                    {
+    $$=new set<int>();
+    $$->insert($1);
+}
+;
+
+logicka_naredba: skup '<' skup { 
+    bool changed=false;
+    for(auto it=$1->begin();it!=$1->end();it++){
+        if($3->find(*it)==$3->end()){
+            $$=false;
+            changed=true;
+            break;
+        }
+    }
+    if(!changed){
+        $$=true;
+    }
+}
+| skup '>' skup {
+    bool changed=false;
+    for(auto it=$3->begin();it!=$3->end();it++){
+        if($1->find(*it)==$1->end()){
+            $$=false;
+            changed=true;
+            break;
+        }
+    }
+    if(!changed){
+        $$=true;
+    }
+}
+;
+
+%%
+
+int main(int argc, char **argv){
+
+    if(yyparse()==0){
+        cout << "Sve je okej sa unetim skupovnim operacijama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}

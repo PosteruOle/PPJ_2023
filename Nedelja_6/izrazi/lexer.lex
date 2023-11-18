@@ -10,7 +10,6 @@
 
     #include "parser.tab.hpp"
 
-
 %}
 
 %%
