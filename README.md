@@ -10,5 +10,5 @@ U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
 - Nedelja 5: preostali primeri upotrebe alata flex, predstavljanje OOP koncepata u programskom jeziku C++;
 - Nedelja 6: sintaksna analiza, sintaksna analiza naviše, upoznavanje sa alatima yacc i bison;
 - Nedelja 7: sintaksna analiza, sintaksna analiza naniže, upoznavanje sa tehnikama rekurzivnog spusta i potisnog automata;
-- Nedelja 8: ispitni rokovi (primer sa skupovima)
-- Nedelja 9: ispitni rokovi (primer sa matricama) 
+- Nedelja 8: ispitni rokovi (primer sa skupovima);
+- Nedelja 9: ispitni rokovi (primer sa matricama); 
