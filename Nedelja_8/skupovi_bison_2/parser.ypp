@@ -1,0 +1,152 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <vector>
+    #include <string>
+    #include <map>
+    #include <set>
+    #include <queue>
+    #include "skupovi.hpp"
+
+    using namespace std;
+
+    #include "parser.tab.hpp"
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    map<string, Skup*> tablica;
+    Skup universal_set;
+    bool universal_flag=false;
+%}
+
+%union{
+    int x;
+    string* id;
+    Skup* s;
+    bool flag;
+}
+
+%token PRINT PRINTALL DODELA CHECK UNIJA PRESEK RAZLIKA SIMRAZLIKA TT CARD UNIVERSE
+%token<x> BROJ
+%token<id> ID 
+%type<s> skup lista_elemenata
+%type<flag> logicka_naredba
+
+%left '<' '>'
+%left UNIJA PRESEK RAZLIKA SIMRAZLIKA
+%right '~'
+
+%%
+
+program: naredba ';' program   { }
+| naredba ';'                  { }
+;
+
+naredba: ID DODELA skup { 
+    tablica[*$1]=$3;
+} 
+| PRINT skup            {  
+    $2->ispisi();
+}
+| PRINTALL              { 
+
+}
+| UNIVERSE DODELA skup  {
+    universal_set=*$3;
+    universal_flag=true;
+    cout << "Univerzalni skup je definisan! Operacija komplement je konacno podrzana!\n";
+}
+| CHECK BROJ ':' skup   { 
+    if($4->checkElement($2)){
+        cout << "True!\n";
+    } else {
+        cout << "False!\n";
+    }
+}
+| CHECK logicka_naredba {
+    if($2){
+        cout << "True!\n";
+    } else {
+        cout << "False!\n";
+    }
+}
+| CARD skup             { 
+    cout << "Kardinalnost skupa iznosi: " << $2->getSize() << ".\n";
+}
+;
+
+skup: '{' lista_elemenata  '}' { 
+    $$=$2;
+}
+| BROJ TT BROJ                 { 
+    set<int> set;
+    for(int i=$1; i<=$3; i++){
+        set.insert(i);
+    }
+    $$=new Skup(set);
+}
+| skup UNIJA skup              { 
+    $$=$1->unija($3);
+}
+| skup PRESEK skup             { 
+    $$=$1->presek($3);
+}
+| skup RAZLIKA skup            {
+    $$=$1->razlika($3);
+}
+| skup SIMRAZLIKA skup         { 
+    $$=$1->simetricna_razlika($3);
+}
+| ID                           {  
+    if(tablica.find(*$1)==tablica.end()){
+        cerr << "Promenljiva nije definisana!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    $$=tablica[*$1];
+}
+| '~' skup                     {  
+    if(!universal_flag){
+        cerr << "Univerzalni skup nije definisan!\n";
+        exit(EXIT_FAILURE);
+    }
+    $$=$2->komplement(&universal_set);
+}
+;
+
+lista_elemenata: BROJ ',' lista_elemenata { 
+    $3->addElement($1);
+    $$=$3;
+}
+| BROJ                                    {
+    $$=new Skup();
+    $$->addElement($1);
+}
+;
+
+logicka_naredba: skup '<' skup { 
+    $$=$1->checkSubset($3);
+}
+| skup '>' skup { 
+    $$=$3->checkSubset($1);
+}
+;
+
+%%
+
+int main(int argc, char **argv){
+
+    if(yyparse()==0){
+        cout << "Sve je okej sa unetim skupovnim operacijama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}
