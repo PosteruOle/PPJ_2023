@@ -54,7 +54,11 @@ naredba: ID DODELA skup {
     $2->ispisi();
 }
 | PRINTALL              { 
-
+    cout << "Sada cemo ispisati sve definisane skupove: \n";
+    for(auto it=tablica.begin();it!=tablica.end();it++){
+        cout << (*it).first << ":\n\t";
+        (*it).second->ispisi();
+    }
 }
 | UNIVERSE DODELA skup  {
     universal_set=*$3;
