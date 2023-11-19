@@ -33,7 +33,7 @@
 }
 ":="                    { return DODELA; }
 [<>{};,:~]              { return *yytext; } 
-"\\\/"                  { return UNIJA; }
+"\\/"                   { return UNIJA; }
 "\/\\"                  { return PRESEK; }
 "\\"                    { return RAZLIKA; }
 "<>"                    { return SIMRAZLIKA; }
