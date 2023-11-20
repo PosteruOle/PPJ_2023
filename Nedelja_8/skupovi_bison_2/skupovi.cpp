@@ -58,11 +58,16 @@ Skup *Skup::razlika(Skup *s){
 }
 
 Skup *Skup::simetricna_razlika(Skup *s){
-    //TODO!
     set<int> result;
     set<int> set=s->getElementi();
     for(auto it=elementi.begin();it!=elementi.end();it++){
         if(set.find(*it)==set.end()){
+            result.insert(*it);
+        }
+    }
+
+    for(auto it=set.begin();it!=set.end();it++){
+        if(elementi.find(*it)==elementi.end()){
             result.insert(*it);
         }
     }
@@ -78,7 +83,13 @@ bool Skup::checkElement(int x){
 }
 
 bool Skup::checkSubset(Skup *s){
-    return false;
+    set<int> set=s->getElementi();
+    for(auto it=elementi.begin();it!=elementi.end();it++){
+        if(set.find(*it)==set.end()){
+            return false;
+        }
+    }
+    return true;
 }
 
 Skup *Skup::komplement(Skup *universe){
