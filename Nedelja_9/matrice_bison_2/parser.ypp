@@ -1,0 +1,129 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <vector>
+    #include <string>
+    #include <map>
+    #include "matrica.hpp"
+
+    using namespace std;
+
+    #include "parser.tab.hpp"
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    extern int yylex();
+
+    map<string, Matrica*> tablica;
+%}
+
+%union{
+    int x;
+    string *id;
+    Matrica * m;
+    vector<int> *v;
+}
+
+%token PRINTALL PKM DODELA
+%token<x> BROJ
+%token<id> ID
+%type<m> matrica niz_vrsta
+%type<v> vrsta  
+
+%left '+' '-'
+%left '*' PKM
+%right '\''
+
+%start program
+
+%%
+
+program: naredba '\n' program  { }
+| naredba '\n'                 { }
+;
+
+naredba: ID DODELA matrica     {
+    tablica[*$1]=$3;
+    cout << *$1 << " = \n";
+    $3->ispisi();
+}
+| ID DODELA matrica ';'        { 
+    tablica[*$1]=$3;
+}
+| matrica                      {
+    $1->ispisi();
+}
+| matrica ';'                  { }
+| PRINTALL                     {
+    for(auto it=tablica.begin();it!=tablica.end();it++){
+        cout << (*it).first << " = \n";
+        (*it).second->ispisi();
+    }
+}
+| PRINTALL ';'                 { 
+    for(auto it=tablica.begin();it!=tablica.end();it++){
+        cout << (*it).first << " = \n";
+        (*it).second->ispisi();
+    }
+}
+|                              { }
+;
+
+matrica: matrica '+' matrica   { 
+    $$=$1->saberi($3);
+}
+| matrica '-' matrica          { 
+    $$=$1->oduzmi($3);
+}
+| matrica '*' matrica          { 
+    $$=$1->pomnozi($3);
+}
+| matrica PKM matrica          { 
+    $$=$1->pomnozi_pokoordinatno($3);
+}
+| '(' matrica ')'              { 
+    $$=$2;
+}
+| matrica '\''                 { }
+| '[' niz_vrsta ']'            { 
+    $$=$2;
+}
+| ID                           { }
+;
+
+niz_vrsta: niz_vrsta ';' vrsta  { 
+    $$=$1;
+    $$->addRow(*$3);
+}
+| vrsta                         { 
+    $$=new Matrica();
+    $$->addRow(*$1);
+}
+;
+
+vrsta: vrsta BROJ    { 
+    $$=$1;
+    $$->push_back($2);
+}
+| BROJ               {
+    $$=new vector<int>();
+    $$->push_back($1);
+}
+;
+
+%%
+
+int main(int argc, char **argv){
+
+    if(yyparse()==0){
+        cout << "Sve je bilo u redu sa unetim naredbama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}
