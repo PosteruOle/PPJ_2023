@@ -37,6 +37,4 @@ class Skup{
     set<int> elementi;
 };
 
-
-
 #endif
