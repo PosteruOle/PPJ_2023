@@ -12,7 +12,7 @@ class Matrica{
 public:
     Matrica(){ }
 
-    Matrica(vector<vector<int>> x){
+    Matrica(vector<vector<int>>& x){
         elements=x;
     }
 
@@ -20,7 +20,7 @@ public:
         elements=m->getElements();
     }
 
-    vector<vector<int>> getElements(){
+    vector<vector<int>>& getElements(){
         return elements;
     }
 
