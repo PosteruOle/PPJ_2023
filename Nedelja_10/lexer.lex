@@ -14,6 +14,7 @@
 
 %%
 
+"print_ALL"          { return PRINTALL; }
 "function"           { return FUNCTION; }
 "sin"                { return SIN; }
 "cos"                { return COS; }

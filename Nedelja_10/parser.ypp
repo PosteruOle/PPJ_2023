@@ -29,7 +29,7 @@
     Izraz *i;
 }
 
-%token FUNCTION SIN COS 
+%token FUNCTION SIN COS PRINTALL
 %token<c> FID ID 
 %token<x> BROJ
 %type<v1> niz_argumenata
@@ -77,6 +77,22 @@ naredba: FUNCTION FID '(' niz_argumenata ')' '=' '"' E '"' {
     }
     tablica[$1]->izvod($3)->ispisi();
     cout << endl;
+}
+| PRINTALL                 { 
+    for(auto it=tablica.begin();it!=tablica.end();it++){
+        cout << it->first << "(";
+        Funkcija *help=it->second;
+        vector<char> arg=help->getArgumenti();
+        for(int i=0;i<arg.size();i++){
+            if(i==arg.size()-1){
+                cout << arg[i] << ") = \n\t";
+                break;
+            }
+            cout << arg[i] << ", ";
+        }
+        help->ispisi();
+        cout << endl;
+    }
 }
 |                          { }
 ;

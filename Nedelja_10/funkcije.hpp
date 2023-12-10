@@ -154,6 +154,10 @@ public:
     double izracunaj() const;
     Izraz *izvod(char c) const;
     double operator[](vector<double>& arg);
+
+    vector<char> getArgumenti(){
+        return argumenti;
+    }
 private:
     vector<char> argumenti;
     Izraz *izraz;
