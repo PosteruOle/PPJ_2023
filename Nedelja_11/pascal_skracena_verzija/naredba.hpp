@@ -11,6 +11,7 @@ using namespace std;
 
 class Naredba{
 public:
+    ~Naredba(){ }
     virtual void izvrsi() const = 0;
 };
 
@@ -19,6 +20,11 @@ public:
     Blok(){ }
     Blok(vector<Naredba*>& naredbe){
         _naredbe=naredbe;
+    }
+    ~Blok(){
+        for(Naredba *n: _naredbe){
+            delete n;
+        }
     }
     void izvrsi() const;
 private:
@@ -42,6 +48,9 @@ public:
     IspisiE(Izraz * izraz){
         this->izraz=izraz;
     }
+    ~IspisiE(){
+        delete izraz;
+    }
     void izvrsi() const;
 private:
     Izraz *izraz;
@@ -53,6 +62,9 @@ public:
     Dodela(string &s, Izraz * izraz){
         this->s=s;
         this->izraz=izraz;
+    }
+    ~Dodela(){
+        delete izraz;
     }
     void izvrsi() const;
 private:
@@ -78,6 +90,10 @@ public:
         _uslov=uslov;
         _naredba=naredba;
     }
+    ~AkoJeOnda(){
+        delete _uslov;
+        delete _naredba;
+    }
     void izvrsi() const;
 private:
     Izraz *_uslov;
@@ -92,6 +108,11 @@ public:
         _naredba1=naredba1;
         _naredba2=naredba2;
     }
+    ~AkoJeOndaInace(){
+        delete _uslov;
+        delete _naredba1;
+        delete _naredba2;
+    }
     void izvrsi() const;
 private:
     Izraz *_uslov;
@@ -105,6 +126,10 @@ public:
     DokJeRadiSledece(Izraz *uslov, Naredba* blok){
         _uslov=uslov;
         _blok=blok;
+    }
+    ~DokJeRadiSledece(){
+        delete _uslov;
+        delete _blok;
     }
     void izvrsi() const;
 private:
