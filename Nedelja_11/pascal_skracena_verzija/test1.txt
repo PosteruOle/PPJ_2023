@@ -1,0 +1,6 @@
+pocetak
+    ispisi("Vrednost izraza je: ");
+    ispisi(3 + 0xA mod 5);
+    ispisi("Vrednost izraza je: ");
+    ispisi(3 + 0xB mod 5);
+kraj.
