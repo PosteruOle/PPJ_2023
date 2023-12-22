@@ -1,0 +1,169 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+    #include <map>
+    #include "izrazi.hpp"
+    #include "naredba.hpp"
+    #define YYDEBUG 1
+
+    using namespace std;
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    map<string, double> tablica;
+%}
+
+%union{
+    double x;
+    string *id;
+    Izraz* i;
+    Naredba* n;
+    vector<Naredba*>* v;
+    Blok* b;
+}
+
+%token POCETAK KRAJ ISPISI UNESI DOKJE ONDA INACE AKOJE RADISLEDECE DODELA EQ NEQ LEQ GEQ MOD
+%token<id> STRING
+%token<id> ID 
+%token<x> BROJ H_BROJ
+%type<i> izraz
+%type<n> naredba
+%type<v> niz_naredbi
+%type<b> blok program
+
+%left LEQ GEQ NEQ EQ '<' '>'
+%left '+' '-'
+%left '*' '/' MOD
+
+%start program
+
+%%
+
+program: blok '.' {  
+    $$=$1;
+    $$->izvrsi();
+}
+;
+
+blok: POCETAK niz_naredbi KRAJ { 
+    $$=new Blok(*$2); 
+}
+;
+
+niz_naredbi: niz_naredbi naredba ';' {
+    $$=$1;
+    $$->push_back($2);
+}
+| naredba ';' {  
+    $$=new vector<Naredba*>();
+    $$->push_back($1); 
+}
+;
+
+naredba: ISPISI '(' STRING ')'   {  
+    $$=new IspisiS(*$3);
+}
+| ISPISI '(' izraz ')'           {  
+    $$=new IspisiE($3);
+}
+| ID DODELA izraz                { 
+    $$=new Dodela(*$1, $3);
+}
+| UNESI '(' ID ')'               {  
+    $$=new Unesi(*$3);
+}
+| AKOJE izraz ONDA ':' naredba INACE ':' naredba { 
+    $$=new AkoJeOndaInace($2, $5, $8);
+}
+| AKOJE izraz ONDA ':' naredba { 
+    $$=new AkoJeOnda($2, $5);
+}
+| DOKJE izraz RADISLEDECE ':' blok   { 
+    $$=new DokJeRadiSledece($2, $5);
+}
+;
+
+izraz: izraz '+' izraz   { 
+    $$=new Zbir($1, $3);
+}
+| izraz '-' izraz        { 
+    $$=new Razlika($1, $3);
+}
+| izraz '*' izraz        { 
+    $$=new Proizvod($1, $3);
+}
+| izraz '/' izraz        { 
+    $$=new Kolicnik($1, $3);
+}
+| izraz MOD izraz        { 
+    $$=new Mod($1, $3);
+}
+| '(' izraz ')'          { 
+    $$=$2;
+}
+| izraz '<' izraz        { 
+    $$=new Manje($1, $3);
+}
+| izraz '>' izraz        { 
+    $$=new Vece($1, $3);
+} 
+| izraz EQ izraz         { 
+    $$=new Jednako($1, $3);
+}
+| izraz NEQ izraz        { 
+    $$=new Razlicito($1, $3);
+}
+| izraz LEQ izraz        { 
+    $$=new ManjeJednako($1, $3);
+}
+| izraz GEQ izraz        { 
+    $$=new VeceJednako($1, $3);
+}
+| ID                     { 
+   $$=new Promenljiva(*$1); 
+}
+| BROJ                   {
+    $$=new Konstanta($1);
+}
+| H_BROJ                 { 
+    $$=new Konstanta($1);
+}
+;
+
+%%
+
+// Zbog naredbe "unesi" moramo da promenimo standardni ulaz! (ne mozemo da pozivamo program sa "./parser < test.txt")  
+// Primere Pascal programa citamo iz datoteke koja se prosledjuje kao argument komandne linije, 
+// a sa standardnog ulaza unosimo vrednosti ukoliko se u Pascal programu koji interpretiramo nalazi naredba "unesi".
+// Promenljiva yyin se nalazi u fajlu lex.yy.c! Spomenuli smo je na 4. casu kada smo se upoznavali sa alatom Flex!
+extern FILE* yyin;
+
+int main(int argc, char *argv[]){
+
+    //yydebug=1;
+
+    if(argc!=2){
+        yyerror("Pogresan broj argumenata komandne linije");
+    }
+
+    if((yyin = fopen(argv[1], "r")) == NULL)
+        yyerror("Neuspjesno otvaranje datoteke");
+
+    if(yyparse()==0){
+        cout << "Sve je u redu sa unetim naredbama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    fclose(yyin);
+
+    return 0;
+}
