@@ -38,6 +38,8 @@
 %type<v> niz_naredbi
 %type<b> blok program
 
+%nonassoc ':'
+%nonassoc INACE
 %left LEQ GEQ NEQ EQ '<' '>'
 %left '+' '-'
 %left '*' '/' MOD
