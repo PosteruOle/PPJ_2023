@@ -17,10 +17,11 @@
     map<string, vector<int>> table;
 
     void initialization(){ 
-
+        //TODO!
     }
 
     void deinitialization(){
+        //TODO!
         cout << "We will now deallocate all the heap memory that was used for storing polynomials!\n";
         for(auto it=table.begin();it!=table.end();it++){
             //delete &(*it).second;
