@@ -17,4 +17,8 @@ U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
 - Nedelja 12: ispitni rokovi (primer sa polinomima) - prva verzija praktičnog ispita;
 
 
-U folderu ZADACI_SA_ROKOVA nalaze se primeri praktičnih ispita održanih u školskoj 2022/2023. godini. 
+U folderu **ZADACI_SA_ROKOVA** nalaze se primeri praktičnih ispita održanih u školskoj 2022/2023. godini (rešenja rokova će ubrzo biti dodata). 
+
+U folderu **OOP_DODATNI_MATERIJALI** nalaze se dva obimnija primera kroz koja su predstavljeni svi bitni **OOP** koncepti podržani u programskom jeziku **C++**. 
+
+U folderu **SINTAKSNA_STABLA_DODATNO** nalazi se implementacija jednostavnog interpretera (istog onog sa kojim smo se upoznali u Nedelji 6) kojom se kreiraju čvorovi apstraktnog sintaksnog stabla i potom ukljanjaju na samom kraju izvršavanja. Primer je urađen na časovima vežbi kod asistenta Vladimira Kuzmanovića. 
