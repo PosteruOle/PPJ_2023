@@ -15,3 +15,6 @@ U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
 - Nedelja 10: kreiranje apstraktnog sintaksnog stabla, ispitni rokovi (primer sa funkcijama) - druga verzija praktičnog ispita;
 - Nedelja 11: kreiranje apstraktnog sintaksnog stabla, ispitni rokovi (primer sa podskupom programskog jezika Pascal) - druga verzija praktičnog ispita;
 - Nedelja 12: ispitni rokovi (primer sa polinomima) - prva verzija praktičnog ispita;
+
+
+U folderu ZADACI_SA_ROKOVA nalaze se primeri praktičnih ispita održanih u školskoj 2022/2023. godini. 
