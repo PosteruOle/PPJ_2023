@@ -1,0 +1,178 @@
+// Resenje u odredjenim slucajevima (prilikom preusmeravanja ulaza iz .txt fajla) prijavljuje poruku o leksickoj greski?!
+// Bez obzira na to, u resenju su pokriveni svi trazeni zahtevi.
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+    #include <map>
+    #define YYDEBUG 1
+
+    using namespace std;
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    map<string, double> tablica_sifara;
+    map<string, vector<double>> tablica_listi_sifara;
+%}
+
+%union{
+    double x;
+    string *id;
+    vector<double>* v;
+}
+
+%token SIFRA LISTASIFRI STAMPAJ EQ NEQ FIRST SECOND SUM 
+%token<id> ID
+%token<x> BROJ
+%type<x> sifra
+%type<v> lista_sifri
+ 
+%left EQ NEQ
+%left '+' '-'
+%left '*' '/'
+%left UMINUS
+
+%start program
+
+%%
+
+program: naredba ';' program  { }
+| naredba ';'                 { }
+;
+
+naredba: SIFRA ID                       { 
+    tablica_sifara[*$2]=0;
+}
+| SIFRA ID '(' sifra ',' BROJ ')'       { 
+    if(int($6)!=int($4*1000)){
+        yyerror("Sifra je pogresno zadata");
+    }
+    tablica_sifara[*$2]=$4;
+}
+| SIFRA ID '(' sifra ',' '?' ')'        { 
+    tablica_sifara[*$2]=$4;
+}
+| SIFRA ID '=' sifra                    { 
+    tablica_sifara[*$2]=$4;
+}
+| LISTASIFRI ID '=' '[' lista_sifri ']' { 
+    tablica_listi_sifara[*$2]=*$5;
+}
+| STAMPAJ sifra                         { 
+    cout << "(" << $2 << ", " << int($2*1000) << ")\n";
+}
+| sifra EQ sifra                        { 
+    if($1==$3)
+        cout << "True!\n";
+    else 
+        cout << "False!\n";
+}
+| sifra NEQ sifra                       { 
+    if($1!=$3)
+        cout << "True!\n";
+    else 
+        cout << "False!\n";
+}
+|                                       { }
+;
+
+sifra: sifra '+' sifra            { 
+    $$=$1+$3;
+}
+| sifra '-' sifra                 { 
+    $$=$1-$3;
+}
+| sifra '*' sifra                 { 
+    $$=$1*$3;
+}
+| sifra '/' sifra                 { 
+    $$=$1/$3;
+}
+| '(' sifra ')'                   { 
+    $$=$2;
+}
+| '-' sifra %prec UMINUS          { 
+    $$=-$2;
+}
+| ID                              { 
+    if(tablica_sifara.find(*$1)==tablica_sifara.end()){
+        yyerror("Sifra nije definisana");
+    }
+    $$=tablica_sifara[*$1];
+}
+| ID '.' FIRST                    { 
+    if(tablica_sifara.find(*$1)==tablica_sifara.end()){
+        yyerror("Sifra nije definisana");
+    }
+    $$=tablica_sifara[*$1];
+}
+| ID '.' SECOND                   { 
+    if(tablica_sifara.find(*$1)==tablica_sifara.end()){
+        yyerror("Sifra nije definisana");
+    }
+    $$=int(tablica_sifara[*$1]*1000);
+}
+| ID '.' SUM                      { 
+    if(tablica_listi_sifara.find(*$1)==tablica_listi_sifara.end()){
+        yyerror("Lista sifara nije definisana");
+    }
+    vector<double> list=tablica_listi_sifara[*$1];
+    double result=0;
+    for(int i=0;i<list.size();i++){
+        result+=list[i];
+    }
+    $$=result;
+} 
+| ID '[' BROJ ']'                 { 
+    if(tablica_listi_sifara.find(*$1)==tablica_listi_sifara.end()){
+        yyerror("Lista sifara nije definisana");
+    }
+    vector<double> list=tablica_listi_sifara[*$1];
+    if($3>=list.size()){
+        yyerror("Indeks izlazi van okvira definisane liste sifara");
+    }
+    $$=list[$3];
+}
+| BROJ                            { 
+    $$=$1;
+}
+| '(' BROJ ',' BROJ ')'           { 
+    if($4!=int($2*1000)){
+        cerr << "Lose zadata sifra!\n";
+        exit(EXIT_FAILURE);
+    }
+    $$=$2;
+}
+;
+
+lista_sifri: lista_sifri ',' sifra { 
+    $$=$1;
+    $$->push_back($3);
+}
+| sifra                            { 
+    $$=new vector<double>();
+    $$->push_back($1);
+}
+;
+
+%%
+
+int main(){
+
+    //yydebug=1;
+
+    if(yyparse()==0){
+        cout << "Sve je u redu sa unetim naredbama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}

@@ -1,0 +1,16 @@
+sifra x;
+sifra wifi(1.23, 1230);
+sifra mejl = wifi;
+stampaj x;
+stampaj mejl;
+sifra y = x + mejl*2 ;
+stampaj y*2;
+sifra banka ( y.snd / 1000 – x.fst , ? );
+stampaj banka;
+x + y == -y*x;
+y == mejl*2;
+(1.2313, 1231) == (1.2312, 1231);
+lista_sifri l = [ mejl * ( 5 + y), 3* ( -1.1, -1100), y – (1.2,1200)*2];
+sifra z = l.sum();
+stampaj z;
+stampaj l[1];
