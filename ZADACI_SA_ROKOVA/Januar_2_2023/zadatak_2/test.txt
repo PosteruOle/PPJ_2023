@@ -4,4 +4,4 @@ list<string> z = {"a", "b", "c"};
 y = z;
 x.print();
 z.print_r();
-list<string> x = {"a", "b", "c"};
+list<string> x = {"a", "b", "c", "ppj 2022/2023"};
