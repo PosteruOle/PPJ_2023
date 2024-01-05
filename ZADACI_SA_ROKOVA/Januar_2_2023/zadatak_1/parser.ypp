@@ -1,0 +1,71 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+    #include <map>
+
+    using namespace std;
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    }
+%}
+
+%token LIST NUMBER STRING PUSH_BACK PRINT PRINT_R PUSH_FRONT EQ NEQ LEQ GEQ
+%token BROJ 
+%token REAL_STRING
+%token ID
+
+%start program
+
+%%
+
+program: naredba ';' program  { }
+| naredba ';'                 { }
+;
+
+naredba: LIST '<' NUMBER '>' ID                    { }
+| LIST '<' NUMBER '>' ID '=' '{' niz_brojeva '}'   { }
+| LIST '<' STRING '>' ID                           { }
+| LIST '<' STRING '>' ID '=' '{' niz_stringova '}' { }
+| ID '=' ID                                        { }
+| ID '.' PRINT '(' ')'                             { }
+| ID '.' PRINT_R '(' ')'                           { }
+| logicka_naredba                                  { }
+;
+
+logicka_naredba: izraz '<' izraz { }
+| izraz '>' izraz                { }
+| izraz EQ izraz                 { }
+| izraz NEQ izraz                { }
+| izraz LEQ izraz                { }
+| izraz GEQ izraz                { }
+;
+
+izraz: 
+niz_brojeva: niz_brojeva ',' BROJ { }
+| BROJ                            { }
+;
+
+niz_stringova: niz_stringova ',' REAL_STRING { }
+| REAL_STRING                                { }
+;
+
+
+%%
+
+int main(){
+    
+    if(yyparse()==0){
+        cout << "Sve je u redu sa unetim naredbama!\n";
+    } else {
+        cerr << "Sintkansa greska!\n";
+        exit(EXIT_FAILURE);
+    }
+    
+    return 0;
+}
