@@ -1,0 +1,6 @@
+stack<int> _x;
+stack<int> _y := {1, 2, 3, 4, 5, 6};
+stack<int> _z := _x;
+_y := _z;
+print_stack(_x);
+print_stack(_w);
