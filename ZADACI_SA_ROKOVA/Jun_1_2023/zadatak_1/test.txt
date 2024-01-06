@@ -1,0 +1,48 @@
+stack<int> _x := {1, 2, 3};
+queue<int> _y := {2, 4, 6};
+stack<int> _z;
+_z := _x;
+print_stack(_x);
+print_queue(_y);
+queue<int> _x := {5, 5, 5};
+
+stack<int> _w;
+_w.push(5);
+_w.push(9);
+print_stack(_w);
+_w.peek();
+_w.pop(); 
+print_stack(_w);
+print_queue(_y);
+_y.pop(); 
+print_queue(_y);
+_x.size();
+_y.size();
+_y.peek();
+
+stack<int> _k := {1, 2, 3};
+stack<int> _l := {6, 7, 2, 3};
+queue<int> _s := {1, 5};
+queue<int> _t := {6, 4};
+queue<int> _test:= _s + _t; 
+print_queue(_test);
+_test:=_t+(-_s); 
+print_queue(_test);
+_k:=-_k; 
+print_stack(_k);
+_l:=_l+_l; 
+print_stack(_l);
+
+_k:={2, 4, 6};
+_l:={2, 4, 6, 8};
+_k==_l;
+_k!=_l;
+_l.pop();
+_k==_l;
+
+_s:={1,3,5};
+_t:={3,5};
+_s!=_t;
+_s.pop();
+print_queue(_s);
+_s==_t;
