@@ -15,6 +15,7 @@ U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
 - **Nedelja 10:** kreiranje apstraktnog sintaksnog stabla, ispitni rokovi (primer sa funkcijama) - druga verzija praktičnog ispita;
 - **Nedelja 11:** kreiranje apstraktnog sintaksnog stabla, ispitni rokovi (primer sa podskupom programskog jezika Pascal) - druga verzija praktičnog ispita;
 - **Nedelja 12:** ispitni rokovi (primer sa polinomima) - prva verzija praktičnog ispita;
+- **Nedelja 13:** ispitni rokovi (primer sa pseudo programskim jezikom) - prva verzija praktičnog ispita.
 
 ## Napomene:
 U folderu **ZADACI_SA_ROKOVA** nalaze se primeri praktičnih ispita održanih u školskoj 2022/2023. godini (rešenja rokova će ubrzo biti dodata). 
@@ -22,3 +23,5 @@ U folderu **ZADACI_SA_ROKOVA** nalaze se primeri praktičnih ispita održanih u 
 U folderu **OOP_DODATNI_MATERIJALI** nalaze se dva obimnija primera kroz koja su predstavljeni svi bitni **OOP** koncepti podržani u programskom jeziku **C++**. 
 
 U folderu **SINTAKSNA_STABLA_DODATNO** nalazi se implementacija jednostavnog interpretera (istog onog sa kojim smo se upoznali u Nedelji 6) kojom se kreiraju čvorovi apstraktnog sintaksnog stabla i potom ukljanjaju na samom kraju izvršavanja. Primer je urađen na časovima vežbi kod asistenta Vladimira Kuzmanovića. 
+
+U folderu **Nedelja_13** nalazi se primer još jednog ispitnog roka urađenog na prošlogodišnjim časovima vežbi. Trinaesta nedelja vežbi nije održana u ovom semestru, tako da se materijali za istu takođe mogu smatrati dodatnim.
