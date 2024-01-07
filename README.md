@@ -17,7 +17,6 @@ U nastavku je navedeno sve što je do sada urađeno na časovima vežbi:
 - **Nedelja 12:** ispitni rokovi (primer sa polinomima) - prva verzija praktičnog ispita;
 
 ## Napomene:
-
 U folderu **ZADACI_SA_ROKOVA** nalaze se primeri praktičnih ispita održanih u školskoj 2022/2023. godini (rešenja rokova će ubrzo biti dodata). 
 
 U folderu **OOP_DODATNI_MATERIJALI** nalaze se dva obimnija primera kroz koja su predstavljeni svi bitni **OOP** koncepti podržani u programskom jeziku **C++**. 
