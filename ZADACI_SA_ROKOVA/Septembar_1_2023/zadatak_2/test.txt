@@ -1,0 +1,5 @@
+broj x;
+broj y := 10 + sqrt(2,3);
+broj z := -2.5 - sqrt(5);
+stampaj(x);
+stampaj(z, y);
