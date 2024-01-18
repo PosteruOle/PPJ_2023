@@ -1,0 +1,14 @@
+def x;
+def y = 10;
+print("%d", x);
+print("%b", y);
+
+x = 4 +y % 2;
+def z = -3*y + x/7;
+
+print("%h", 4*z - 7*(5-3));
+
+def w = (~x<<3)|z + (y>>2)&(1<<5);
+print("%d", w^x);
+
+x + y == -y&x;

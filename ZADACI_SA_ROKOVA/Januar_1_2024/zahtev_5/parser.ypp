@@ -1,0 +1,147 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+    #include <map>
+    #include "izrazi.hpp"
+    #include "naredba.hpp"
+
+    using namespace std;
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    } 
+
+    map<string, int> tablica;   
+%}
+
+%union{
+    int x;
+    string *id;
+    Izraz *i;
+    Naredba *n;
+    Blok *b;
+}
+
+%token DEF PRINT EQ NEQ PD PB PH SL SR
+%token<id> ID
+%token<x> BROJ
+%type<i> izraz
+%type<n> naredba
+%type<b> blok
+
+
+%left SL SR
+%left '+' '-'
+%left '*' '/' '%'
+%left '&' '|' '^'
+%right UMINUS '~' 
+
+%start program
+
+%%
+
+program: blok                  { 
+    $1->izvrsi();
+}
+;
+
+blok: blok naredba ';'         { 
+    $$=$1;
+    $$->addNaredba($2);
+}
+| naredba ';'                  { 
+    $$=new Blok({$1});
+}
+;
+
+naredba: DEF ID                        { 
+    $$=new Deklaracija(*$2);
+}
+| DEF ID '=' izraz                     { 
+    $$=new DeklaracijaSaInicijalizacijom(*$2, $4);
+}
+| ID '=' izraz                         { 
+    $$=new DeklaracijaSaInicijalizacijom(*$1, $3);
+}
+| PRINT '(' '"' PD  '"' ',' izraz ')'  { 
+    $$=new Print("%d", $7);
+}
+| PRINT '(' '"' PB  '"' ',' izraz ')'  { 
+    $$=new Print("%b", $7);
+}
+| PRINT '(' '"' PH  '"' ',' izraz ')'  { 
+    $$=new Print("%h", $7);
+}
+| izraz EQ izraz                       { 
+    $$=new LogickaNaredba("==", $1, $3);
+}
+| izraz NEQ izraz                      { 
+    $$=new LogickaNaredba("!=", $1, $3);
+}
+;
+
+izraz: izraz '+' izraz { 
+    $$=new BinarniIzraz("+", $1, $3);
+}
+| izraz '-' izraz      { 
+    $$=new BinarniIzraz("+", $1, $3);
+}
+| izraz '*' izraz      { 
+    $$=new BinarniIzraz("*", $1, $3);
+}
+| izraz '/' izraz      { 
+    $$=new BinarniIzraz("/", $1, $3);
+}
+| izraz '%' izraz      { 
+    $$=new BinarniIzraz("%", $1, $3);
+}
+| izraz '&' izraz      { 
+    $$=new BinarniIzraz("&", $1, $3);
+}
+| izraz '^' izraz      { 
+    $$=new BinarniIzraz("^", $1, $3);
+}
+| izraz '|' izraz      { 
+    $$=new BinarniIzraz("|", $1, $3);
+}
+| izraz SL izraz       { 
+    $$=new BinarniIzraz("<<", $1, $3);
+}
+| izraz SR izraz       { 
+    $$=new BinarniIzraz(">>", $1, $3);
+}
+| '(' izraz ')'        { 
+    $$=$2;
+}
+| '-' izraz %prec UMINUS {
+    $$=new UnarniIzraz("-", $2);
+}
+| '~' izraz            {
+    $$=new UnarniIzraz("~", $2);
+}
+| BROJ                 { 
+    $$=new Konstanta($1);
+}         
+| ID                   { 
+    $$=new Promenljiva(*$1);
+}
+;
+
+%%
+
+int main(){
+
+    if(yyparse()==0){
+        cout << "Sve je u redu sa unetim naredbama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}

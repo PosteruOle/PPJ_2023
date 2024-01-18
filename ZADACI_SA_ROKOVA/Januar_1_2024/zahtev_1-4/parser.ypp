@@ -1,0 +1,174 @@
+%{
+    #include <iostream>
+    #include <cstdlib>
+    #include <string>
+    #include <vector>
+    #include <map>
+
+    using namespace std;
+
+    extern int yylex();
+
+    void yyerror(string s){
+        cerr << s << "!\n";
+        exit(EXIT_FAILURE);
+    } 
+
+    map<string, int> tablica;   
+%}
+
+%union{
+    int x;
+    string *id;
+}
+
+%token DEF PRINT EQ NEQ GEQ LEQ PD PB PH SL SR
+%token<id> ID
+%token<x> BROJ
+%type<x> izraz
+
+
+%left SL SR
+%left '+' '-'
+%left '*' '/' '%'
+%left '&' '|' '^'
+%right UMINUS '~' 
+
+%start program
+
+%%
+
+program: naredba ';' program   { }
+| naredba ';'                  { }
+;
+
+naredba: DEF ID                        { 
+    tablica[*$2]=0;
+}
+| DEF ID '=' izraz                     { 
+    tablica[*$2]=$4;
+}
+| ID '=' izraz                         { 
+    tablica[*$1]=$3;
+}
+| PRINT '(' '"' PD  '"' ',' izraz ')'  { 
+    printf("%d\n", $7);
+}
+| PRINT '(' '"' PB  '"' ',' izraz ')'  { 
+    //printf("%\n", $7);
+    unsigned mask=1<<(sizeof(int)*8-1);
+    for(int i=1;i<=sizeof(int)*8;i++){
+        if((mask & $7)!=0)
+            cout << "1";
+        else
+            cout << "0";
+        mask>>=1;
+    }
+    cout << endl;
+}
+| PRINT '(' '"' PH  '"' ',' izraz ')'  { 
+    printf("%x\n", $7);
+}
+| izraz EQ izraz                       { 
+    if($1==$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz NEQ izraz                      { 
+    if($1!=$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz '<' izraz                      { 
+    if($1<$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz '>' izraz                      { 
+    if($1>$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz GEQ izraz                      { 
+    if($1>=$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+| izraz LEQ izraz                      { 
+    if($1<=$3)
+        cout << "True!\n";
+    else
+        cout << "False!\n";
+}
+;
+
+izraz: izraz '+' izraz { 
+    $$=$1 + $3;
+}
+| izraz '-' izraz      { 
+    $$=$1 - $3;
+}
+| izraz '*' izraz      { 
+    $$=$1 * $3;
+}
+| izraz '/' izraz      { 
+    $$=$1 / $3;
+}
+| izraz '%' izraz      { 
+    $$=$1 % $3;
+}
+| izraz '&' izraz      { 
+    $$=$1 & $3;
+}
+| izraz '^' izraz      { 
+    $$=$1 ^ $3;
+}
+| izraz '|' izraz      { 
+    $$=$1 | $3;
+}
+| izraz SL izraz       { 
+    $$=$1 << $3;
+}
+| izraz SR izraz       { 
+    $$=$1 >> $3;
+}
+| '(' izraz ')'        { 
+    $$=$2;
+}
+| '-' izraz %prec UMINUS {
+    $$=-$2;
+}
+| '~' izraz            {
+    $$=~$2;
+}
+| BROJ                 { 
+    $$=$1;
+}         
+| ID                   { 
+    if(tablica.find(*$1)==tablica.end()){
+        cerr << "Promenljiva nije definisana!\n";
+        exit(EXIT_FAILURE);
+    }
+    $$=tablica[*$1];
+}
+;
+
+
+%%
+
+int main(){
+
+    if(yyparse()==0){
+        cout << "Sve je u redu sa unetim naredbama!\n";
+    } else {
+        cerr << "Sintaksna greska!\n";
+        exit(EXIT_FAILURE);
+    }
+
+    return 0;
+}
