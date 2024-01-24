@@ -67,7 +67,7 @@ int main() {
    program();
    
    if(preduvid == EOI) {
-     printf("Sve je okej\n");
+     printf("Sve je u redu sa unetim naredbama!\n");
    } else {
      fprintf(stderr, "Sintaksna greska! Visak tokena na ulazu!\n");
      exit(EXIT_FAILURE);
@@ -83,7 +83,7 @@ int main() {
 void program(void) {
    if(preduvid==INT || preduvid==PRINT || preduvid==INV || preduvid==BROJ || preduvid==OZ){
      naredba();
-     preduvid==yylex();
+     preduvid=yylex();
      programP();
    } else {
      fprintf(stderr,"Sintaksna greska! Ocekivani tokeni INT, PRINT, INV, BROJ ili OZ!\n");
@@ -99,7 +99,7 @@ void program(void) {
 void programP(void) {
    if(preduvid==INT || preduvid==PRINT || preduvid==INV || preduvid==BROJ || preduvid==OZ){
      naredba();
-     preduvid==yylex();
+     preduvid=yylex();
      programP();
    } else if(preduvid==EOI){
      return;
@@ -117,15 +117,15 @@ void programP(void) {
  */
 void naredba(void) {
    if(preduvid==INT){
-     preduvid==yylex();
-     preduvid==yylex();
-     preduvid==yylex();
+     preduvid=yylex();
+     preduvid=yylex();
+     preduvid=yylex();
      E();
    } else if(preduvid==PRINT){
-     preduvid==yylex();
-     preduvid==yylex();
+     preduvid=yylex();
+     preduvid=yylex();
      E();
-     preduvid==yylex();
+     preduvid=yylex();
    } else if(preduvid==INV || preduvid==BROJ || preduvid==OZ){
      E();
    } else {
@@ -172,7 +172,7 @@ void T(void) {
  */
 void TP(void) {
    if(preduvid==III){
-     preduvid==yylex();
+     preduvid=yylex();
      F();
      TP();
    } else if(preduvid==ILI || preduvid==NL || preduvid==ZZ){
@@ -192,7 +192,7 @@ void TP(void) {
  */
 void EP(void) {
    if(preduvid==ILI){
-     preduvid==yylex();
+     preduvid=yylex();
      T();
      EP();
    } else if(preduvid==NL || preduvid==ZZ){
@@ -211,7 +211,7 @@ void EP(void) {
  */
 void F() {
    if(preduvid==INV){
-     preduvid==yylex();
+     preduvid=yylex();
      G();
    } else if(preduvid==BROJ || preduvid==OZ){
      G();
@@ -229,12 +229,12 @@ void F() {
  */
 void G() {
   if(preduvid==BROJ){
-    preduvid==yylex();
+    preduvid=yylex();
     return;
   } else if(preduvid==OZ){
-    preduvid==yylex();
+    preduvid=yylex();
     E();
-    preduvid==yylex();
+    preduvid=yylex();
   } else {
     fprintf(stderr,"Sintaksna greska! Ocekivani tokeni BROJ ili OZ!\n");
     exit(EXIT_FAILURE);
