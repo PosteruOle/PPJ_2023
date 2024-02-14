@@ -1,0 +1,143 @@
+%{
+  #include <iostream>
+  #include <cstdlib>
+  #include <string>
+  #include <vector>
+  #include <map>
+  #include "izrazi.hpp"
+  #include "naredbe.hpp"
+
+  using namespace std;
+
+  extern int yylex();
+
+  void yyerror(string s){
+    cerr << s << "!\n";
+    exit(EXIT_FAILURE);
+  }
+
+  map<string, string> tablica;
+%}
+
+%union{
+  int x;
+  string *id;  
+  Izraz *i;
+  Naredba *n;
+  Blok *b;
+}
+
+%token START END STRING INPUT OUTPUT ERROR MM VV PRINT_ALL IF ELSE WHILE EQ NEQ
+%token<id> ID MESSAGE
+%type<n> naredba
+%type<i> izraz
+%type<b> blok
+
+%left NEQ EQ
+%left '+'
+%left '*'
+%right '~'
+
+%start program
+
+%%
+
+program: START ':' blok END { 
+  $3->izvrsi();
+}
+;
+
+blok: blok naredba ';' { 
+  $1->addNaredba($2);
+  $$=$1;
+}
+| naredba ';'          { 
+  $$=new Blok({$1});
+}
+;
+
+naredba: STRING ID     { 
+  $$=new Deklaracija(*$2);
+}
+| STRING ID '=' izraz  { 
+  $$=new Inicijalizacija(*$2, $4, 1);
+}
+| ID '=' izraz         { 
+  $$=new Inicijalizacija(*$1, $3, 2);
+}
+| PRINT_ALL            { 
+  $$=new PrintALL();
+}
+| INPUT VV ID          { 
+  $$=new Input(*$3);
+}
+| OUTPUT MM izraz      { 
+  $$=new Print("output", $3);
+}
+| ERROR MM izraz       { 
+  $$=new Print("error", $3);
+}
+| IF '(' izraz ')' '{' naredba ';' '}' ELSE '{' naredba ';' '}' {
+  $$=new IfElse($3, $6, $11);
+}
+| IF '(' izraz ')' '{' naredba ';' '}' {
+  $$=new If($3, $6);
+}
+| WHILE '(' izraz ')' '{' blok '}' {
+  $$=new While($3, $6);
+}
+;
+
+izraz: izraz '+' izraz { 
+  $$=new BinarniIzraz("+", $1, $3);
+}
+| izraz '*' izraz      { 
+  $$=new BinarniIzraz("*", $1, $3);
+}
+| '~' izraz            { 
+  $$=new UnarniIzraz("~", $2);
+}
+| '(' izraz ')'        { 
+  $$=$2;
+}
+| izraz EQ izraz {
+  $$=new BinarniIzraz("==", $1, $3);
+}
+| izraz NEQ izraz {
+  $$=new BinarniIzraz("!=", $1, $3);
+}
+| ID                   {
+  $$=new Promenljiva(*$1);
+}
+| MESSAGE              { 
+  $$=new Konstanta(*$1);
+}
+;
+
+%%
+
+extern FILE *yyin;
+
+int main(int argc, char **argv){
+
+  if(argc!=2){
+    cerr << "Nedovoljan broj argumenata komandne linije!\n";
+    exit(EXIT_FAILURE);
+  }
+
+  if((yyin=fopen(argv[1], "r"))==NULL){
+    cerr << "Greska pri otvaranju datoteke!\n";
+    exit(EXIT_FAILURE);
+  }
+
+  if(yyparse()==0){
+    cout << "Sve je u redu sa unetim naredbama!\n";
+  } else {
+    cerr << "Sintaksna greska!\n";
+    exit(EXIT_FAILURE);
+  }
+
+  fclose(yyin);
+
+  return 0;
+}

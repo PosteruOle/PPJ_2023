@@ -1,0 +1,20 @@
+start:
+
+  string x;
+  string y;
+  string z="Hello world!";
+  x="ppj2024";
+  std_output << x;
+  std_error <<  z;
+  std_error <<  z+z;
+  std_error <<  x;
+  y=x*x+"matf";
+  
+  print_ALL;
+  std_error <<  x+x;
+  std_output << x*"ppj";
+  std_error << ("ppj" + "<->") + "2024";
+  std_error << ("ppj" + "ppj1");
+  std_output << ~ "abb b ba";
+
+end
